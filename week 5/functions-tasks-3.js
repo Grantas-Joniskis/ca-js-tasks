@@ -51,7 +51,7 @@ console.group("30. Sukurkite funkciją, kuri taiso pastraipos klaidas");
 {
 
     function capitalizeFirstLetter(str) {
-        return str.chatAt(0).capitalizeFirstLetter();
+        return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
     function splitIntoSentences(paragraph) {
@@ -64,32 +64,41 @@ console.group("30. Sukurkite funkciją, kuri taiso pastraipos klaidas");
             separator: [ '.', '?', ... , '!'],
         }
         */
+        let sentences = paragraph.split(/[.!?]+/);
+        let separators = paragraph.match(/[.!?]+/g);
+        let newSentences = [];
+
+        sentences.forEach(sentence => {
+            newSentences.push(sentence.trim());
+        });
+
+        return {
+            sentences: newSentences,
+            separators: separators
+        }
     }
 
     function reduceEmptySpaces(str) {
-        // Jūsų sugalvota logika, kaip šalinti tarpus prieš kablelį ir kelis tarpus iš eilės
+        return str.replace(/\s\s+/g, ' ').replace(/\s,/g, ',');
     }
 
     // 1.
     function fixParagraph(paragraph) {
-        /*
-        2. Pirmiausiai suskirstome į sakinius, naudojant splitIntoSentences: 
-                string  ->  {
-                            sentences: [sentence1, sentence2, ... , sentenceN],
-                            separator: [ '.', '?', ... , '!'],
-                            }
-        3. Redaguoti kiekvieną sakinį, naudojant funkciją reduceEmptySpaces
-        4. Redaguoti kiekvieną sakinį, naudojant funkciją capitalizeFirstLetter
-        5. Sujungti sakinius su atitinkamais sakinių skiriamaisiais/baigiamaisiais ženklais
-        6. Grąžinti rezultatą.
-        */
+        const obj = splitIntoSentences(paragraph);
+        for(let i = 0; i < obj.sentences.length-1; i++) {
+            let str = reduceEmptySpaces(obj.sentences[i]);
+            str = capitalizeFirstLetter(str);
+            str = str + obj.separators[i] + ' ';
+            obj.sentences[i] = str;
+        }
+        return obj.sentences.join('');
     }
 
-    // const paragraph = '    labas , as jonas . Tave      vadina Kęstu? Taip ir žinojau  !    ';
-    // const fixedParagraph = fixParagraph(paragraph);
-    // console.log(paragraph);
-    // console.log(fixedParagraph);
-    // console.log('---');
+    const paragraph = '    labas , as jonas . Tave      vadina Kęstu? Taip ir žinojau  !    ';
+    const fixedParagraph = fixParagraph(paragraph);
+    console.log(paragraph);
+    console.log(fixedParagraph);
+    console.log('---');
 }
 console.groupEnd();
 console.log();
